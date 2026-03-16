@@ -7,5 +7,5 @@ sudo ip addr add 23.214.219.133/25 dev enp0s8
 sudo ip addr add 23.214.219.132/25 dev enp0s8
 
 # Add DNS server IP
-sudo ip addr add 23.214.219.130/25 dev enp0s88
+sudo ip addr add 23.214.219.130/25 dev enp0s8
 
