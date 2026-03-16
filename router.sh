@@ -83,3 +83,5 @@ sudo iptables -A FORWARD -p tcp --dport openvpn -d $IP_VPN_GW -j ACCEPT
 sudo iptables -A FORWARD -s $IP_VPN_GW -j ACCEPT
 
 
+
+sudo suricata -q 0 -c /etc/suricata/suricata.yaml -D
