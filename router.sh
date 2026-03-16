@@ -45,7 +45,7 @@ sudo iptables -A INPUT -p udp --dport domain -j ACCEPT
 
 # ssh from internal or vpn
 sudo iptables -A INPUT -p tcp --dport ssh -s $NET_INT -j ACCEPT
-sudo iptablse -A INPUT -p tcp --dport ssh -s $IP_VPN_GW -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport ssh -s $IP_VPN_GW -j ACCEPT
 
 # Firewall configuration to authorize direct communications (without NAT):
 
@@ -63,21 +63,21 @@ sudo iptables -A FORWARD -p tcp --dport smtp -d $IP_SMTP -j ACCEPT
 sudo iptables -A FORWARD -p tcp --dport smtp -s $IP_SMTP -j ACCEPT
 
 # POP and IMAP connections to the mail server:
-iptables -A FORWARD -p tcp --dport imap -d $IP_MAIL -j ACCEPT
-iptables -A FORWARD -p tcp --dport imap -s $IP_MAIL -j ACCEPT
-iptables -A FORWARD -p tcp --dport pop3 -d $IP_MAIL -j ACCEPT
-iptables -A FORWARD -p tcp --dport pop3 -s $IP_MAIL -j ACCEPT
+sudo iptables -A FORWARD -p tcp --dport imap -d $IP_MAIL -j ACCEPT
+sudo iptables -A FORWARD -p tcp --dport imap -s $IP_MAIL -j ACCEPT
+sudo iptables -A FORWARD -p tcp --dport pop3 -d $IP_MAIL -j ACCEPT
+sudo iptables -A FORWARD -p tcp --dport pop3 -s $IP_MAIL -j ACCEPT
 
 
 # HTTP and HTTPS connections to the www server:
-iptables -A FORWARD -p tcp --dport http -d $IP_WWW -j ACCEPT
-iptables -A FORWARD -p tcp --dport http -s $IP_WWW -j ACCEPT
-iptables -A FORWARD -p tcp --dport https -d $IP_WWW -j ACCEPT
-iptables -A FORWARD -p tcp --dport https -s $IP_WWW -j ACCEPT
+sudo iptables -A FORWARD -p tcp --dport http -d $IP_WWW -j ACCEPT
+sudo iptables -A FORWARD -p tcp --dport http -s $IP_WWW -j ACCEPT
+sudo iptables -A FORWARD -p tcp --dport https -d $IP_WWW -j ACCEPT
+sudo iptables -A FORWARD -p tcp --dport https -s $IP_WWW -j ACCEPT
 
 # OpenVPN connections to the vpn-gw server:
-iptables -A FORWARD -p udp --dport openvpn -d $IP_VPN_GW -j ACCEPT
-iptables -A FORWARD -p tcp --dport openvpn -d $IP_VPN_GW -j ACCEPT
+sudo iptables -A FORWARD -p udp --dport openvpn -d $IP_VPN_GW -j ACCEPT
+sudo iptables -A FORWARD -p tcp --dport openvpn -d $IP_VPN_GW -j ACCEPT
 
 # VPN clients connected to the gateway (vpn-gw) should be able to connect to all services in the Internal network:
 sudo iptables -A FORWARD -s $IP_VPN_GW -j ACCEPT
