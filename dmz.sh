@@ -1,6 +1,5 @@
 sudo ifconfig enp0s8 23.214.219.129 netmask 255.255.255.128
-sudo ip route del default
-sudo ip route add default gw 23.214.219.254
+sudo route add default gw 23.214.219.254
 
 
 # Add Web server IP
