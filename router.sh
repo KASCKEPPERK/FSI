@@ -1,11 +1,14 @@
 sudo ifconfig enp0s8 23.214.219.254 netmask 255.255.255.128
 sudo ifconfig enp0s9 192.168.10.254 netmask 255.255.255.0
 sudo ifconfig enp0s10 87.248.215.97 netmask 255.255.255.0
+sudo ifconfig enp0s3 down
+sudo route add 193.136.0.0 mask 255.254.0.0 87.248.215.98
+
 
 sudo sysctl -w net.ipv4.ip_forward=1
 
 
-EXT_IF="enp0s3"       
+EXT_IF="enp0s10"       
 DMZ_IF="enp0s8"         
 INT_IF="enp0s9"         
 
@@ -20,12 +23,12 @@ IP_VPN_GW="23.214.219.134"
 
 IP_FTP="23.214.219.130"
 
-# Internal Servers & Networks
+# Internal
 NET_INT="192.168.10.0/24"
 IP_DATASTORE="192.168.10.2"
 
-# External Entities
-IP_DNS2="193.137.16.74"
+# internet
+IP_DNS2="193.137.16.75"
 IP_EDEN="193.136.212.1"
 
 # clear all rules and drop all communications entering
@@ -82,6 +85,23 @@ sudo iptables -A FORWARD -p tcp --dport openvpn -d $IP_VPN_GW -j ACCEPT
 # VPN clients connected to the gateway (vpn-gw) should be able to connect to all services in the Internal network:
 sudo iptables -A FORWARD -s $IP_VPN_GW -j ACCEPT
 
+#Firewall configuration for connections to the external IP address of the firewall (using NAT):
 
+#FTP connections (in passive and active modes) to the ftp server:
+sudo iptables -t nat -A PREROUTING -i $EXT_IF -d $FW_EXT_IP -p tcp --dport 21 -j DNAT --to-destination $IP_FTP
+sudo iptables -A FORWARD -p tcp -d $IP_FTP --dport 21 -j ACCEPT
+
+sudo iptables -t nat -A PREROUTING -i $EXT_IF -d $FW_EXT_IP -p tcp --dport 22 -s $IP_EDEN -j DNAT --to-destination $IP_DATASTORE
+sudo iptables -t nat -A PREROUTING -i $EXT_IF -d $FW_EXT_IP -p tcp --dport 22 -s $IP_DNS2 -j DNAT --to-destination $IP_DATASTORE
+sudo iptables -A FORWARD -p tcp -d $IP_DATASTORE --dport 22 -j ACCEPT
+
+
+# MASQUERADE internal traffic leaving the external interface
+sudo iptables -t nat -A POSTROUTING -o $EXT_IF -s $NET_INT -j MASQUERADE
+
+# Allow specific outbound traffic from Internal Network
+sudo iptables -A FORWARD -s $NET_INT -p udp --dport 53 -j ACCEPT
+sudo iptables -A FORWARD -s $NET_INT -p tcp -m multiport --dports 22,80,443 -j ACCEPT
+sudo iptables -A FORWARD -s $NET_INT -p tcp --dport 21 -j ACCEPT
 
 sudo suricata -q 0 -c /etc/suricata/suricata.yaml -D
