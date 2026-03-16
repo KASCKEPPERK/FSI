@@ -72,8 +72,8 @@ iptables -A FORWARD -p tcp --dport http -d $IP_WWW -j ACCEPT
 iptables -A FORWARD -p tcp --dport https -d $IP_WWW -j ACCEPT
 
 # openvpn 
-iptables -A FORWARD -p udp --dport OpenVPN -d $IP_VPN_GW -j ACCEPT
-iptables -A FORWARD -p tcp --dport OpenVPN -d $IP_VPN_GW -j ACCEPT
+iptables -A FORWARD -p udp --dport openvpn -d $IP_VPN_GW -j ACCEPT
+iptables -A FORWARD -p tcp --dport openvpn -d $IP_VPN_GW -j ACCEPT
 
 # VPN clients 
 iptables -A FORWARD -s $IP_VPN_GW -d $NET_INT -j ACCEPT
