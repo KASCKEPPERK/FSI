@@ -1,0 +1,34 @@
+%YAML 1.1
+---
+
+af-packet:
+        - interface: enp0s10
+          cluster-id: 99
+          defrag: yes
+          copy-mode: ips
+          use-mmap: yes
+          tpacket-v3: yes
+          ring-size: 200000
+
+nfqueue:
+         - id: 0
+           fail-open: no
+
+outputs:	
+         - eve-log:
+                    enabled: yes
+                    filetype: regular
+                    filename: /root/gitproject1/FSI/suricata/logs/eve.json
+                    types:
+                          - alert
+                          - drop
+                          - http
+
+rule-files:
+            - suricata.rules
+vars:
+      - address-groups:
+                       HOME_NET: "[192.168.10.0/24,23.214.219.0/25]"
+
+logging:
+         default-log-level: info

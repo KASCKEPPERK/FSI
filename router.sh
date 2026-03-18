@@ -104,4 +104,4 @@ sudo iptables -A FORWARD -s $NET_INT -p udp --dport 53 -j ACCEPT
 sudo iptables -A FORWARD -s $NET_INT -p tcp -m multiport --dports 22,80,443 -j ACCEPT
 sudo iptables -A FORWARD -s $NET_INT -p tcp --dport 21 -j ACCEPT
 
-sudo suricata -q 0 -c /etc/suricata/suricata.yaml -D
+sudo suricata -q 0 -c /root/gitproject1/FSI/suricata/suricata.yaml -D
