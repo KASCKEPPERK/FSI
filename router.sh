@@ -1,12 +1,10 @@
+#!/bin/bash
+
 sudo ifconfig enp0s8 23.214.219.254 netmask 255.255.255.128
 sudo ifconfig enp0s9 192.168.10.254 netmask 255.255.255.0
 sudo ifconfig enp0s10 87.248.215.97 netmask 255.255.255.0
 sudo ifconfig enp0s3 down
-sudo route add 193.136.0.0 mask 255.254.0.0 87.248.215.98
-
-
-sudo sysctl -w net.ipv4.ip_forward=1
-
+sudo route add default gw 87.248.215.98
 
 EXT_IF="enp0s10"       
 DMZ_IF="enp0s8"         
@@ -31,11 +29,24 @@ IP_DATASTORE="192.168.10.2"
 IP_DNS2="193.137.16.75"
 IP_EDEN="193.136.212.1"
 
+# enable forwarding
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+modprobe nf_conntrack_ftp
+
 # clear all rules and drop all communications entering
-sudo iptables --flush
+sudo iptables -F
+sudo iptables -X
+sudo iptables -t nat -F
+sudo iptables -t nat -X
+
 sudo iptables -P INPUT DROP
 sudo iptables -P FORWARD DROP
 sudo iptables -P OUTPUT ACCEPT
+
+# loopback
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
 
 # send traficc to nfq to use suricata
 sudo iptables -A INPUT -j NFQUEUE --queue-num 0
@@ -44,7 +55,7 @@ sudo iptables -A FORWARD -j NFQUEUE --queue-num 0
 # Firewall configuration to protect the router: 
 
 # dns (no need for OUTPUT as policy is ACCEPT)
-sudo iptables -A INPUT -p udp --dport domain -j ACCEPT
+sudo iptables -A INPUT -p udp --sport domain -j ACCEPT
 
 # ssh from internal or vpn
 sudo iptables -A INPUT -p tcp --dport ssh -s $NET_INT -j ACCEPT
@@ -55,11 +66,11 @@ sudo iptables -A INPUT -p tcp --dport ssh -s $IP_VPN_GW -j ACCEPT
 # Domain name resolutions using the dns server:
 # The dns server should be able to resolve names using DNS servers on the Internet (dns2 and also others):
 sudo iptables -A FORWARD -p udp --dport domain -d $IP_DNS -j ACCEPT
-sudo iptables -A FORWARD -p udp --dport domain -s $IP_DNS -j ACCEPT
+sudo iptables -A FORWARD -p udp --sport domain -s $IP_DNS -j ACCEPT
 
 # The dns and dns2 servers should be able to synchronize the contents of DNS zones:
 sudo iptables -A FORWARD -p tcp --dport domain -s $IP_DNS -d $IP_DNS2 -j ACCEPT
-sudo iptables -A FORWARD -p tcp --dport domain -d $IP_DNS -s $IP_DNS2 -j ACCEPT
+sudo iptables -A FORWARD -p tcp --sport domain -d $IP_DNS -s $IP_DNS2 -j ACCEPT
 
 # SMTP connections to the smtp server:
 sudo iptables -A FORWARD -p tcp --dport smtp -d $IP_SMTP -j ACCEPT
@@ -104,4 +115,4 @@ sudo iptables -A FORWARD -s $NET_INT -p udp --dport 53 -j ACCEPT
 sudo iptables -A FORWARD -s $NET_INT -p tcp -m multiport --dports 22,80,443 -j ACCEPT
 sudo iptables -A FORWARD -s $NET_INT -p tcp --dport 21 -j ACCEPT
 
-sudo suricata -q 0 -c /root/gitproject1/FSI/suricata/suricata.yaml -D
+sudo suricata -q 0 -c /etc/suricata/suricata_FSI.yaml -D
