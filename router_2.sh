@@ -128,15 +128,14 @@ sudo iptables -A FORWARD -s $NET_INT -p tcp --dport ssh -j ACCEPT
 # FTP connections (in passive and active modes) to external FTP servers.
 sudo iptables -A FORWARD -s $NET_INT -p tcp --dport ftp -j ACCEPT
 
-echo "Firewall configuration for communications from the internal network to the outside (using NAT)"
+echo "Firewall configuration for communications from the internal network to the outside (using NAT): Done"
 
 ## Copies the suricata.yaml no suricata.yaml default location
 cp suricata.yaml /etc/suricata/suricata_FSI.yaml
 ## This is the additional rules file made to ensure XSS, SQLi and port scanning is detected and blocked
 cp local.rules /var/lib/suricata/rules/local.rules
 
-## This downloads the current Emerging Threats Open ruleset into suricata.rules file
-suricata-update
+echo "coppied .yaml and rules to default places"
 
 sudo suricata -q 0 -c /etc/suricata/suricata_FSI.yaml -D
 
