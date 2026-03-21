@@ -43,8 +43,8 @@ sudo iptables -P FORWARD DROP
 sudo iptables -P OUTPUT ACCEPT
 
 # send traficc to nfq to use suricata
-sudo iptables -A INPUT -j NFQUEUE --queue-num 0
-sudo iptables -A FORWARD -j NFQUEUE --queue-num 0
+sudo iptables -A INPUT -m mark ! --mark 1/1 -j NFQUEUE --queue-num 0
+sudo iptables -A FORWARD -m mark ! --mark 1/1 -j NFQUEUE --queue-num 0
 
 # Firewall configuration to protect the router: 
 
