@@ -1,7 +1,7 @@
 drop tcp any any -> $HOME_NET any (msg:"PORT SCAN detected"; flags:S; threshold:type threshold, track by_src, count 20, seconds 5; sid:1000001; rev:1;)
 
-drop http any any -> $HOME_NET any (msg:"SQLi Attempt (OR 1=1 Pattern)"; flow:established,to_server; content:"OR"; nocase; pcre:"/\s+OR\s+['"]?\d['"]?\s*=\s*['"]?\d/Ui"; sid:1000002; rev:1;)
-drop http any any -> $HOME_NET any (msg:"SQLi Attempt (SELECT FROM Pattern)"; flow:established,to_server; content:"SELECT"; nocase; http_uri; content:"FROM"; nocase; http_uri; pcre:"/SELECT.*\bFROM\b/Ui"; sid:1000003; rev:1;)
+drop http any any -> $HOME_NET any (msg:"SQLi Attempt (OR 1=1 Pattern)"; content:"OR"; nocase; pcre:"/\s+OR\s+['"]?\d['"]?\s*=\s*['"]?\d/Ui"; sid:1000002; rev:1;)
+drop http any any -> $HOME_NET any (msg:"SQLi Attempt (SELECT FROM Pattern)"; content:"SELECT"; nocase; http_uri; content:"FROM"; nocase; http_uri; pcre:"/SELECT.*\bFROM\b/Ui"; sid:1000003; rev:1;)
 
-drop http any any -> $HOME_NET any (msg:"XSS attempt script tag"; flow:established,to_server; content:"<script>"; nocase; http_uri; sid:1000005; rev:1;)
-drop http any any -> $HOME_NET any (msg:"XSS attempt alert()"; flow:established,to_server; content:"alert("; nocase; http_uri; sid:1000006; rev:1;)
+drop http any any -> $HOME_NET any (msg:"XSS attempt script tag"; content:"<script>"; nocase; http_uri; sid:1000005; rev:1;)
+drop http any any -> $HOME_NET any (msg:"XSS attempt alert()"; content:"alert("; nocase; http_uri; sid:1000006; rev:1;)
