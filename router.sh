@@ -31,6 +31,7 @@ IP_EDEN="193.136.212.1"
 
 # enable forwarding
 echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/netfilter/nf_conntrack_helper
 
 # Flush existing rules
 sudo iptables -F
@@ -93,7 +94,7 @@ sudo iptables -A FORWARD -p tcp --dport openvpn -d $IP_VPN_GW -j ACCEPT
 # VPN clients connected to the gateway (vpn-gw) should be able to connect to all services in the Internal network:
 sudo iptables -A FORWARD -s $IP_VPN_GW -d $NET_INT -j ACCEPT
 
-echo "# Firewall configuration to authorize direct communications (without NAT): Done"
+echo "Firewall configuration to authorize direct communications (without NAT): Done"
 
 #Firewall configuration for connections to the external IP address of the firewall (using NAT):
 
@@ -109,7 +110,7 @@ sudo iptables -t nat -A PREROUTING -i $EXT_IF -d $FW_EXT_IP -p tcp --dport ssh -
 sudo iptables -A FORWARD -p tcp -s $IP_EDEN -d $IP_DATASTORE --dport ssh -j ACCEPT
 sudo iptables -A FORWARD -p tcp -s $IP_DNS2 -d $IP_DATASTORE --dport ssh -j ACCEPT
 
-echo "#Firewall configuration for connections to the external IP address of the firewall (using NAT): Done"
+echo "Firewall configuration for connections to the external IP address of the firewall (using NAT): Done"
 
 # Firewall configuration for communications from the internal network to the outside (using NAT)
  
