@@ -50,7 +50,6 @@ sudo iptables -A FORWARD -j NFQUEUE --queue-num 0
 
 # Allow established and related traffic (essential for stateful inspection)
 sudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-sudo iptables -A INPUT -i lo -j ACCEPT
 
 # dns (no need for OUTPUT as policy is ACCEPT)
 sudo iptables -A INPUT -p udp --sport domain -m state --state RELATED,ESTABLISHED -j ACCEPT
