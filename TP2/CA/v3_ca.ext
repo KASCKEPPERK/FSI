@@ -1,0 +1,2 @@
+keyUsage = cRLSign, digitalSignature, keyCertSign
+basicConstraints=critical,CA:true,pathlen:0
