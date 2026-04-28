@@ -1,3 +1,5 @@
-auth    required    pam_unix.so oralok
+# First, capture the input and check the TOTP code
+auth [success=1 default=ignore] pam_google_authenticator.so forward_pass nullok
 
-auth    required    pam_google_authenticator.so secret=/home/${USER}/.google_authenticator
+# Then, take the remaining part of the string and check the Unix password
+auth required pam_unix.so use_first_pass
