@@ -15,9 +15,9 @@ cd /path/to/your/CA/folder  # <-- UPDATE THIS PATH to where your CA folder is!
 echo "Starting OpenSSL OCSP Responder on port 2560..."
 sudo openssl ocsp -index index.txt \
       -port 2560 \
-      -rsigner certs/ocsp.crt \
-      -rkey private/ocsp.key \
-      -CA ca.crt \
+      -rsigner CA/ocsp.crt \
+      -rkey CA/ocsp.key \
+      -CA CA/ca.crt \
       -text \
       -url http://10.60.0.2:2560 > /var/log/ocsp_responder.log 2>&1 &
 
