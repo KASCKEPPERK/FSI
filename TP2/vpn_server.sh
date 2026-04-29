@@ -10,5 +10,6 @@ sudo cp CA/vpn.crt /etc/pki/CA/vpn.crt
 sudo cp CA/dh2048.pem /etc/openvpn/server/dh2048.pem
 sudo cp server.conf /etc/openvpn/server/server.conf
 sudo cp totp /etc/pam.d/totp
+sudo cp check_ocsp.sh /etc/openvpn/server/check_ocsp.sh
 
 sudo openvpn --config /etc/openvpn/server/server.conf
