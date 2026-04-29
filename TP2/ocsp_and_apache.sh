@@ -10,16 +10,16 @@ echo "[OK] Network interface configured: 10.60.0.2"
 # 2. Start the OCSP Responder
 # We navigate to your CA folder and run the server in the background (using '&')
 # so the script can continue to the Apache steps.
-cd /path/to/your/CA/folder  # <-- UPDATE THIS PATH to where your CA folder is!
+cd CA # <-- UPDATE THIS PATH to where your CA folder is!
 
 echo "Starting OpenSSL OCSP Responder on port 2560..."
 sudo openssl ocsp -index index.txt \
-      -port 2560 \
-      -rsigner CA/ocsp.crt \
-      -rkey CA/ocsp.key \
-      -CA CA/ca.crt \
-      -text \
-      -url http://10.60.0.2:2560 > /var/log/ocsp_responder.log 2>&1 &
+  -port 2560 \
+  -rsigner ocsp.crt \
+  -rkey ocsp.key \
+  -CA ca.crt \
+  -text \
+  -url http://10.60.0.2:2560 >/var/log/ocsp_responder.log 2>&1 &
 
 echo "[OK] OCSP Responder running in the background."
 
