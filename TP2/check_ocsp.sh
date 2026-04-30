@@ -1,27 +1,38 @@
 #!/bin/bash
-# OpenVPN passes the certificate depth ($1) and the temporary certificate file ($2)
 
+# OpenVPN passes the certificate depth as the first argument
 depth=$1
-cert_file=$2
 
-# We only want to check the client certificate (depth 0), not the CA itself
+# We only need to verify the client certificate (depth 0).
+# The CA certificate (depth 1) is inherently trusted by our config.
 if [ "$depth" -ne 0 ]; then
     exit 0
 fi
 
-# Ask the Internal VM's OCSP responder if the cert is good
-# (Replace 10.60.0.2 with your actual Internal VM IP if it changed)
-STATUS=$(openssl ocsp -issuer /etc/pki/CA/ca.crt \
-                      -CAfile /etc/pki/CA/ca.crt \
-                      -cert "$cert_file" \
-                      -url http://10.60.0.2:2560 \
-                      -noverify 2>&1)
+# Ensure OpenVPN passed the peer_cert environment variable
+if [ -z "$peer_cert" ]; then
+    echo "Error: No peer_cert provided by OpenVPN."
+    exit 1
+fi
 
-# Check if the output contains "revoked"
-if echo "$STATUS" | grep -q "revoked"; then
-    echo "CERTIFICATE REVOKED"
-    exit 1  # 1 tells OpenVPN to reject the connection
+# --- Configuration ---
+OCSP_URL="http://10.60.0.2:2560"
+ISSUER_CERT="/etc/pki/CA/ca.crt"
+
+# Run the OpenSSL OCSP command
+# -noverify is used here on the response IF the OCSP responder uses the root CA to sign responses. 
+# If using a delegated OCSP cert, adjust accordingly.
+STATUS=$(openssl ocsp -issuer "$ISSUER_CERT" \
+                      -cert "$peer_cert" \
+                      -url "$OCSP_URL" \
+                      -CAfile "$ISSUER_CERT" 2>&1)
+
+# Check the output for the exact "good" status
+if echo "$STATUS" | grep -q ": good"; then
+    # Certificate is valid
+    exit 0
 else
-    echo "CERTIFICATE VALID"
-    exit 0  # 0 tells OpenVPN to allow the connection
+    # Certificate is revoked, unknown, or the OCSP server is unreachable
+    echo "OCSP check failed or cert revoked: $STATUS"
+    exit 1
 fi
