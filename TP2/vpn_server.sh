@@ -3,6 +3,8 @@
 # configure interfaces
 sudo ifconfig enp0s8 193.136.212.1 netmask 255.255.255.0
 sudo ifconfig enp0s9 10.60.0.1 netmask 255.255.255.0
+sudo iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o enp0s9 -j MASQUERADE
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
 sudo cp CA/ca.crt /etc/pki/CA/ca.crt
 sudo cp CA/vpn.key /etc/pki/CA/vpn.key
