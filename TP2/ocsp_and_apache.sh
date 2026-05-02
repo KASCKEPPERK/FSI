@@ -17,6 +17,6 @@ sudo cp apache.crt /etc/pki/tls/certs/apache.crt
 sudo cp apache.key /etc/pki/tls/private/apache.key
 sudo cp apache.conf /etc/httpd/conf.d/vpn_secure.conf
 
-sudo systemctl start httpd
+sudo httpd
 
 echo "All available services started successfully!"
