@@ -1,1 +1,2 @@
 auth    required    pam_google_authenticator.so secret=/etc/httpd/totp/.${USER} user=apache
+account required    pam_permit.so
