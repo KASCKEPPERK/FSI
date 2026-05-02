@@ -3,9 +3,10 @@
 
 REVOKE=$1
 
-sudo openssl ca -config openssl.conf -revoke $REVOKE -keyfile ca.key -cert ca.crt
+openssl ca -config openssl.conf -revoke $REVOKE -keyfile CA/ca.key -cert CA/ca.crt
 
-sudo killall openssl
+
+killall openssl
 sudo openssl ocsp -index index.txt \
   -port 2560 \
   -rsigner ocsp.crt \
