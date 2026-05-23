@@ -7,5 +7,4 @@ sudo ip addr add 192.168.57.20/24 dev enp0s9
 sudo ip link set enp0s8 up
 sudo ip link set enp0s9 up
 
-ip addr show enp0s8
-ip addr show enp0s9
+echo 1 > /proc/sys/net/ipv4/ip_forward
