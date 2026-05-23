@@ -5,10 +5,13 @@ sudo ip link set enp0s9 up
 
 ip route add 192.168.56.0/24 via 192.168.57.30
 
-systemctl start docker
 
-docker pull bkimminich/juice-shop
+sudo systemctl start docker
 
-docker run -d \--name juice-shop \--restart unless-stopped \-p 3000:3000 \bkimminich/juice-shop
+sudo docker rm -f juice-shop 2>/dev/null || true
 
-docker ps
+sudo docker pull bkimminich/juice-shop
+
+sudo docker run -d \--name juice-shop \--restart unless-stopped \-p 3000:3000 \bkimminich/juice-shop
+
+sudo docker ps
