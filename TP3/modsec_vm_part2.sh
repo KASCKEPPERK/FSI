@@ -11,6 +11,10 @@ sudo systemctl disable firewalld
 sudo systemctl stop firewalld
 nft flush ruleset
 
+iptables -F
+iptables -t nat -F
+iptables -P FORWARD ACCEPT
+
 echo 1 > /proc/sys/net/ipv4/ip_forward
 sudo iptables -t nat -A POSTROUTING -s 192.168.56.0 -o enp0s9 -j MASQUERADE
 
