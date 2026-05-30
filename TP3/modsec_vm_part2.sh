@@ -11,15 +11,12 @@ sudo systemctl disable firewalld
 sudo systemctl stop firewalld
 nft flush ruleset
 
-iptables -F
-iptables -t nat -F
-iptables -P FORWARD ACCEPT
 
 echo 1 > /proc/sys/net/ipv4/ip_forward
 sudo iptables -t nat -A POSTROUTING -s 192.168.56.0 -o enp0s9 -j MASQUERADE
 
-cp ../configs/juice_shop_proxy.conf /etc/httpd/conf.d/juice_shop_proxy.conf
-cp ../configs/mod_security_custom.conf /etc/httpd/conf.d/mod_security_custom.conf
+cp configs/juice_shop_proxy.conf /etc/httpd/conf.d/juice_shop_proxy.conf
+cp configs/modsecurity.conf /etc/httpd/conf.d/mod_security_custom.conf
 
 systemctl enable httpd
 systemctl restart httpd
